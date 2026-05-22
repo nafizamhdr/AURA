@@ -1,0 +1,20 @@
+[
+  "Air_temperature",
+  "Process_temperature",
+  "Rotational_speed",
+  "Torque",
+  "Tool_wear",
+  "Temp_Difference",
+  "Power",
+  "Torque_Speed_Ratio",
+  "Temp_Rate_of_Change",
+  "RPM_Variance",
+  "month",
+  "hour",
+  "dayofweek",
+  "machine_age_hours",
+  "hours_since_last",
+  "Type_H",
+  "Type_L",
+  "Type_M"
+]

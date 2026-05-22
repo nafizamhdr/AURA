@@ -1,0 +1,43 @@
+{
+  "training_date": "2026-05-19T18:10:03.463614",
+  "best_model": "Random Forest",
+  "models_compared": [
+    "XGBoost",
+    "Random Forest",
+    "Gradient Boosting"
+  ],
+  "training_samples": 63074,
+  "test_samples": 15769,
+  "features": 18,
+  "performance": {
+    "test_mae_hours": 163.77937929716077,
+    "test_mae_days": 6.8241408040483655,
+    "test_r2": 0.9859912449695794
+  },
+  "comparison": [
+    {
+      "Model": "XGBoost",
+      "Train MAE (days)": 7.907136111416436,
+      "Test MAE (days)": 9.134698540677983,
+      "Train R\u00b2": 0.9914238465872278,
+      "Test R\u00b2": 0.9842374267516651,
+      "Overfitting Gap": 0.007186419835562674
+    },
+    {
+      "Model": "Random Forest",
+      "Train MAE (days)": 4.298388752813918,
+      "Test MAE (days)": 6.8241408040483655,
+      "Train R\u00b2": 0.9938590032559322,
+      "Test R\u00b2": 0.9859912449695794,
+      "Overfitting Gap": 0.007867758286352888
+    },
+    {
+      "Model": "Gradient Boosting",
+      "Train MAE (days)": 7.49961635925607,
+      "Test MAE (days)": 8.854808718915951,
+      "Train R\u00b2": 0.9928457182526852,
+      "Test R\u00b2": 0.9846276195314186,
+      "Overfitting Gap": 0.008218098721266553
+    }
+  ]
+}

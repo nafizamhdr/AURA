@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local data (regeneratable from source dataset)
+Data/preprocessed_data.csv
+Data/engineered_data.csv
+
+# EDA outputs
+Output/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Antigravity CLI
+.antigravitycli/
+.antigravitycli
