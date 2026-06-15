@@ -1,0 +1,15 @@
+.git
+.github
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+ct/
+cd/
+Tugas_MLOps/
+Src/*.ipynb
+docs/
+Output/
+*.md
+.gitignore
+.dockerignore
