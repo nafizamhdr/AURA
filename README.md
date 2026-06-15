@@ -41,6 +41,48 @@ Open <http://localhost:8501>. Use the **preset buttons** in the sidebar to load 
 - `Model/` — trained artifacts (`rul_model.pkl`, `scaler.pkl`, `failure_model.pkl`, `label_encoder.pkl`, `features.json`, `model_metadata.json`).
 - `Pipeline/preprocessing_pipeline.pkl` — pickled preprocessor.
 - `Data/` — source CSVs (not deployed).
+- `tests/` — pytest suite (unit, data validation, training verification, fairness, robustness, API, registry, monitoring).
+- `ct/` — Continuous Training: `features.py` (reproducible feature engineering), `evaluate.py` (metrics), `train.py` (retrain + quality gate).
+- `cd/` — Continuous Deployment: `registry.py` (file-based model registry), `monitor.py` (PSI drift detection).
+- `api/` — FastAPI serving (`/predict`, `/healthz`, `/version`).
+- `Dockerfile` — container image for the API.
+- `.github/workflows/` — `ci.yml`, `ct.yml`, `cd.yml`.
+
+## MLOps Pipeline (CI / CT / CD)
+
+The project is automated with three GitHub Actions workflows:
+
+| Workflow | Trigger | What it does |
+| --- | --- | --- |
+| **CI** (`ci.yml`) | every push / PR | Runs the full pytest suite — unit tests, data validation (Pandera), training verification, fairness & robustness. |
+| **CT** (`ct.yml`) | manual / weekly cron | Recomputes features from the raw CSV, retrains, and applies a quality gate (MAE / R² / fairness). Does **not** promote unless the gate passes. |
+| **CD** (`cd.yml`) | manual / version tag | Runs API, registry and monitoring tests, then builds the Docker image. |
+
+### Run the tests
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+pytest
+```
+
+### Run the API
+
+```bash
+uvicorn api.main:app --reload
+# then open http://localhost:8000/docs  (interactive Swagger UI)
+```
+
+```bash
+curl -X POST http://localhost:8000/predict -H "Content-Type: application/json" \
+  -d '{"Type":"M","Air_temperature":300,"Process_temperature":310,"Rotational_speed":1500,"Torque":40,"Tool_wear":100}'
+```
+
+### Continuous training (dry-run)
+
+```bash
+python -m ct.train            # train + evaluate + quality gate, no promotion
+python -m ct.train --promote  # write artifacts only if the gate passes
+```
 
 ## Note on cold start
 
