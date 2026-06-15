@@ -1,0 +1,40 @@
+name: CT (Continuous Training)
+
+# Continuous Training pipeline: retrain on a schedule (or on demand), evaluate
+# performance + fairness, and report the quality-gate decision. It does NOT
+# promote artifacts (no --promote), so it never overwrites the shipped model.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 1"   # every Monday 02:00 UTC
+
+jobs:
+  retrain-and-evaluate:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        # No LFS needed: CT trains a fresh model from the CSV dataset.
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Fairness & robustness checks
+        run: pytest tests/test_fairness.py tests/test_robustness.py
+
+      # Thresholds reflect what is achievable from the committed raw CSV, whose
+      # engineered temporal features (machine_age_hours, ...) are not included;
+      # the production baseline (~6.8 MAE days) used those richer features.
+      - name: Continuous training + quality gate (dry-run, no promote)
+        run: python -m ct.train --max-mae-days 35 --max-type-gap-days 5
