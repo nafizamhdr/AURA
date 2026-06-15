@@ -8,6 +8,9 @@ venv/
 # Jupyter
 .ipynb_checkpoints/
 
+# Pytest
+.pytest_cache/
+
 # Local data (regeneratable from source dataset)
 Data/preprocessed_data.csv
 Data/engineered_data.csv
