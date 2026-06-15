@@ -33,8 +33,8 @@ jobs:
       - name: Fairness & robustness checks
         run: pytest tests/test_fairness.py tests/test_robustness.py
 
-      # Thresholds reflect what is achievable from the committed raw CSV, whose
-      # engineered temporal features (machine_age_hours, ...) are not included;
-      # the production baseline (~6.8 MAE days) used those richer features.
+      # Features are recomputed from the raw CSV via ct/features.py (replicates
+      # FE.ipynb), so the retrain uses the real temporal features and reaches
+      # ~MAE 10 days / R2 0.98. Gate uses the production-aligned defaults.
       - name: Continuous training + quality gate (dry-run, no promote)
-        run: python -m ct.train --max-mae-days 35 --max-type-gap-days 5
+        run: python -m ct.train

@@ -48,12 +48,11 @@ def ct_regression():
     import pandas as pd
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.model_selection import train_test_split
-    from Preprocessing_pipeline import PreprocessingPipeline
+    from ct.features import features_and_target
 
     df = pd.read_csv(ROOT / "Data" / "predictive_maintenance.csv", nrows=6000)
-    X = PreprocessingPipeline().transform_batch(df.to_dict("records"))
-    y = df["RUL_hours"].to_numpy()
-    idx = np.arange(len(df))
+    X, y, engineered = features_and_target(df)
+    idx = np.arange(len(engineered))
     X_tr, X_te, y_tr, y_te, i_tr, i_te = train_test_split(
         X, y, idx, test_size=0.25, random_state=42
     )
@@ -63,7 +62,7 @@ def ct_regression():
         "X_test": X_te,
         "y_test": y_te,
         "pred": model.predict(X_te),
-        "df_test": df.iloc[i_te].reset_index(drop=True),
+        "df_test": engineered.iloc[i_te].reset_index(drop=True),
     }
 
 

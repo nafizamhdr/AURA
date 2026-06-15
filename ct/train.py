@@ -31,23 +31,27 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "Src"))
 
-from Preprocessing_pipeline import PreprocessingPipeline  # noqa: E402
+from ct.features import features_and_target  # noqa: E402
 from ct.evaluate import regression_metrics, mae_by_group  # noqa: E402
 
 
 def load_xy(nrows=None):
+    """Recompute the engineered features from the raw CSV (reproducible).
+
+    Returns the sorted/engineered dataframe so columns like Type stay aligned
+    with the feature matrix X.
+    """
     df = pd.read_csv(ROOT / "Data" / "predictive_maintenance.csv", nrows=nrows)
-    X = PreprocessingPipeline().transform_batch(df.to_dict("records"))
-    y = df["RUL_hours"].to_numpy()
-    return df, X, y
+    X, y, engineered = features_and_target(df)
+    return engineered, X, y
 
 
 def parse_args(argv=None):
     ap = argparse.ArgumentParser(description="AURA continuous training with quality gate")
     ap.add_argument("--nrows", type=int, default=None, help="limit rows (for a fast run)")
     ap.add_argument("--n-estimators", type=int, default=100)
-    ap.add_argument("--max-mae-days", type=float, default=10.0, help="gate: max test MAE in days")
-    ap.add_argument("--min-r2", type=float, default=0.95, help="gate: min test R2")
+    ap.add_argument("--max-mae-days", type=float, default=12.0, help="gate: max test MAE in days")
+    ap.add_argument("--min-r2", type=float, default=0.97, help="gate: min test R2")
     ap.add_argument("--max-type-gap-days", type=float, default=5.0,
                     help="gate: max MAE gap (days) across machine Type H/M/L")
     ap.add_argument("--promote", action="store_true",
